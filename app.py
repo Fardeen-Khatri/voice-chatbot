@@ -250,7 +250,7 @@ def main():
     </script>
     """
     
-    st.components.v1.html(voice_html)
+    st.components.v1.html(voice_html, min-height=300, max-height=800)
     
     # Separator
     st.markdown("---")

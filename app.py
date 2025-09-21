@@ -69,7 +69,7 @@ def main():
                 🔊 Speak Response
             </button>
             <div id="status" style="margin: 10px; font-weight: bold;"></div>
-            <div id="transcript" style="background: white; color: black; padding: 10px; border-radius: 5px; margin: 10px; min-height: 100px; overflow-y: auto"></div>
+            <div id="transcript" style="background: white; color: black; padding: 10px; border-radius: 5px; margin: 10px; min-height: 30px; overflow-y: auto"></div>
             <div id="response" style="background: #e8f5e8; color: black; padding: 10px; border-radius: 5px; margin: 10px; min-height: 50px; overflow-y: auto"></div>
         </div>
     </div>

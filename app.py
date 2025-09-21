@@ -55,43 +55,9 @@ def main():
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
     
-    # Voice input section
-    st.markdown("---")
-    col1, col2 = st.columns([3, 1])
-    
-    with col1:
-        # Text input with unique key to prevent infinite loops
-        user_input = st.text_input(
-            "Type your question or use voice input below:", 
-            key=f"text_input_{st.session_state.input_key}",
-            placeholder="Ask me anything about my background..."
-        )
-    
-    with col2:
-        # Voice input button
-        if st.button("🎤 Use Voice", key="voice_btn"):
-            st.info("Use the voice interface below to speak!")
-    
-    # Process text input
-    if user_input and user_input.strip():
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        
-        # Generate response
-        with st.spinner("Thinking..."):
-            response = get_response(user_input)
-        
-        # Add assistant response to chat history
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        
-        # Increment key to reset input field
-        st.session_state.input_key += 1
-        
-        # Rerun to show new messages and clear input
-        st.rerun()
-    
-    # Voice interface
-    st.markdown("### 🎙️ Voice Interface")
+    # Voice interface FIRST
+    st.markdown("### 🎙️ Primary Voice Interface")
+    st.markdown("*Recommended: Use voice for the best experience!*")
     
     # HTML/JavaScript for voice functionality
     voice_html = f"""
@@ -290,11 +256,81 @@ def main():
     
     st.components.v1.html(voice_html, height=450)
     
-    # Clear button
-    if st.button("🗑️ Clear Chat History", key="clear_btn"):
-        st.session_state.messages = []
-        st.session_state.input_key += 1
-        st.rerun()
+    # Separator
+    st.markdown("---")
+    
+    # Text input section SECOND (as fallback option)
+    st.markdown("### ⌨️ Alternative Text Input")
+    st.markdown("*Use this if voice is not available on your device*")
+    
+    col1, col2 = st.columns([4, 1])
+    
+    with col1:
+        # Text input with unique key to prevent infinite loops
+        user_input = st.text_input(
+            "Type your question here:", 
+            key=f"text_input_{st.session_state.input_key}",
+            placeholder="Ask me anything about my background...",
+            help="This is a fallback option if voice doesn't work on your device"
+        )
+    
+    with col2:
+        # Submit button for better UX
+        submit_btn = st.button("📤 Submit", key="submit_btn")
+    
+    # Process text input
+    if (user_input and user_input.strip()) or submit_btn:
+        if user_input and user_input.strip():
+            # Add user message to chat history
+            st.session_state.messages.append({"role": "user", "content": user_input})
+            
+            # Generate response
+            with st.spinner("Thinking..."):
+                response = get_response(user_input)
+            
+            # Add assistant response to chat history
+            st.session_state.messages.append({"role": "assistant", "content": response})
+            
+            # Increment key to reset input field
+            st.session_state.input_key += 1
+            
+            # Rerun to show new messages and clear input
+            st.rerun()
+        elif submit_btn and not user_input.strip():
+            st.warning("Please enter a question before submitting!")
+    
+    # Footer section
+    st.markdown("---")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        # Clear button
+        if st.button("🗑️ Clear Chat History", key="clear_btn"):
+            st.session_state.messages = []
+            st.session_state.input_key += 1
+            st.rerun()
+    
+    with col2:
+        # Instructions button
+        with st.expander("📖 How to Use"):
+            st.markdown("""
+            **Voice Input (Recommended):**
+            1. Click "🎤 Start Speaking"
+            2. Allow microphone access if prompted
+            3. Ask your question clearly
+            4. Click "🔊 Speak Response" to hear the answer
+            
+            **Text Input (Fallback):**
+            1. Type your question in the text box
+            2. Click "📤 Submit" or press Enter
+            
+            **Sample Questions:**
+            - "Tell me about your life story"
+            - "What's your superpower?"
+            - "What areas do you want to grow in?"
+            - "What misconception do people have about you?"
+            - "How do you push your boundaries?"
+            """)
 
 if __name__ == "__main__":
     main()

@@ -98,7 +98,7 @@ def main():
             return false;
         }}
         
-        recognition.continuous = false;
+        recognition.continuous = true;
         recognition.interimResults = false;
         recognition.lang = 'en-US';
         

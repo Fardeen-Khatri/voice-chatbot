@@ -98,8 +98,8 @@ def main():
             return false;
         }}
         
-        recognition.continuous = false;
-        recognition.interimResults = false;
+        recognition.continuous = true;
+        recognition.interimResults = true;
         recognition.lang = 'en-US';
         
         recognition.onstart = function() {{

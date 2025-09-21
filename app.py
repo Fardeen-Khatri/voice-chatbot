@@ -14,13 +14,13 @@ st.set_page_config(
 PERSONAL_RESPONSES = {
     "life story": "I'm a mechanical engineer at heart, and you might be thinking why I am here then looking for AI roles, the story begins during the final year of my engineering tenure during which i was told by my faculties that in todays world only theory and bookish knowledge is not enough to survive in corporate world computer knowledge is a must so after my B.E. I joined a course in Data Analytics and Data Science, I learned a lot from building interactive dashboards to machine learning, what i feel is that though my B.E. is in mechanical engineering but the field of AI is such that it can be integrated into any existing field, one such example i can give that in automobile sector there are a lot of data the technical specs, ownership, etc, these are very few each for understanding each of this data as mechanical engineer there is a possibility that I would pocess much better knowledge as compared to than that of a person from a complete IT background thus allowing me to gather and use much more releval=nt information, also i have completed my MBA recently which helps me understand much better how business run domestic as well as international",
     
-    "superpower": "My #1 superpower is my ability to understand context and provide personalized responses quickly. I can process complex information and break it down into simple, actionable insights.",
+    "superpower": "My #1 superpower is systematic problem-solving. I approach every challenge methodically, whether it's debugging code, researching the best fuel for my motorcycle, or current AI trends.",
     
-    "growth areas": "The top 3 areas I'd like to grow in are: 1) Better understanding of cultural nuances and context, 2) Improved emotional intelligence in conversations, and 3) Enhanced ability to provide creative solutions to complex problems.",
+    "growth areas": "The top 3 areas I'd like to grow in are: 1) Advanced machine learning algorithms and deep learning, 2) Leadership and mentoring skills as I progress in my career, and 3) Public speaking and presentation skills for technical topics.",
     
     "misconception": "A common misconception that people have that they think i am weak, they take my silence for granted, they think I am incapable to achieve something in life",
     
-    "boundaries": "I push my boundaries by constantly learning from each conversation, asking clarifying questions when I'm unsure, and always trying to provide more helpful and accurate responses. I believe in continuous improvement through every interaction."
+    "boundaries": "I push my boundaries by trying to stay away from comfort zone, by continuous learning and research."
 }
 
 def get_response(user_input):

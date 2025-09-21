@@ -19,6 +19,7 @@ PERSONAL_RESPONSES = {
     "misconception": "A common misconception that people have that they think i am weak, they take my silence for granted, they think I am incapable to achieve something in life",
     
     "boundaries": "I push my boundaries by trying to stay away from comfort zone, by continuous learning and research."
+}
 
 def get_response(user_input):
     """Generate response based on user input"""

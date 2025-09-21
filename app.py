@@ -56,7 +56,7 @@ def main():
     
     # HTML/JavaScript for voice functionality
     voice_html = f"""
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin: 10px 0; overflow-y: auto">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin: 10px 0; max height: 600px; overflow-y: auto">
         <div style="text-align: center; color: white;">
             <h3>🎤 Voice Assistant</h3>
             <button id="startBtn" onclick="startRecording()" style="background: #4CAF50; color: white; border: none; padding: 15px 30px; font-size: 16px; border-radius: 25px; cursor: pointer; margin: 5px;">

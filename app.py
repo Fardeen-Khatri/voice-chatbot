@@ -1,7 +1,5 @@
 import streamlit as st
-import requests
-import json
-from datetime import datetime
+import time
 
 # Configure page
 st.set_page_config(
@@ -10,7 +8,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Personal responses database - CUSTOMIZE THESE!
+# Personal responses database - YOUR CUSTOMIZED RESPONSES
 PERSONAL_RESPONSES = {
     "life story": "I'm a mechanical engineer at heart, and you might be thinking why I am here then looking for AI roles, the story begins during the final year of my engineering tenure during which i was told by my faculties that in todays world only theory and bookish knowledge is not enough to survive in corporate world computer knowledge is a must so after my B.E. I joined a course in Data Analytics and Data Science, I learned a lot from building interactive dashboards to machine learning, what i feel is that though my B.E. is in mechanical engineering but the field of AI is such that it can be integrated into any existing field, one such example i can give that in automobile sector there are a lot of data the technical specs, ownership, etc, these are very few each for understanding each of this data as mechanical engineer there is a possibility that I would pocess much better knowledge as compared to than that of a person from a complete IT background thus allowing me to gather and use much more releval=nt information, also i have completed my MBA recently which helps me understand much better how business run domestic as well as international",
     
@@ -28,18 +26,18 @@ def get_response(user_input):
     user_input_lower = user_input.lower()
     
     # Check for keywords in user input
-    if any(keyword in user_input_lower for keyword in ["life story", "tell me about yourself", "who are you"]):
+    if any(keyword in user_input_lower for keyword in ["life story", "tell me about yourself", "who are you", "background", "journey"]):
         return PERSONAL_RESPONSES["life story"]
-    elif any(keyword in user_input_lower for keyword in ["superpower", "strength", "best at"]):
+    elif any(keyword in user_input_lower for keyword in ["superpower", "strength", "best at", "good at", "skill"]):
         return PERSONAL_RESPONSES["superpower"] 
-    elif any(keyword in user_input_lower for keyword in ["growth", "improve", "develop", "learn"]):
+    elif any(keyword in user_input_lower for keyword in ["growth", "improve", "develop", "learn", "areas"]):
         return PERSONAL_RESPONSES["growth areas"]
-    elif any(keyword in user_input_lower for keyword in ["misconception", "misunderstand", "wrong about"]):
+    elif any(keyword in user_input_lower for keyword in ["misconception", "misunderstand", "wrong about", "think about"]):
         return PERSONAL_RESPONSES["misconception"]
     elif any(keyword in user_input_lower for keyword in ["boundaries", "limits", "challenge", "push"]):
         return PERSONAL_RESPONSES["boundaries"]
     else:
-        return f"That's an interesting question! While I'm designed to answer specific questions about my background, superpowers, growth areas, misconceptions, and how I push boundaries, I'd be happy to elaborate on any of those topics. What would you like to know more about?"
+        return f"That's an interesting question! I'm designed to answer specific questions about my life story, superpowers, growth areas, misconceptions, and how I push boundaries. What would you like to know more about?"
 
 # Main app
 def main():
@@ -49,6 +47,8 @@ def main():
     # Initialize session state
     if "messages" not in st.session_state:
         st.session_state.messages = []
+    if "input_key" not in st.session_state:
+        st.session_state.input_key = 0
     
     # Display chat messages
     for message in st.session_state.messages:
@@ -60,19 +60,41 @@ def main():
     col1, col2 = st.columns([3, 1])
     
     with col1:
-        # Text input as fallback
-        user_input = st.text_input("Type your question or use voice input below:", key="text_input")
+        # Text input with unique key to prevent infinite loops
+        user_input = st.text_input(
+            "Type your question or use voice input below:", 
+            key=f"text_input_{st.session_state.input_key}",
+            placeholder="Ask me anything about my background..."
+        )
     
     with col2:
         # Voice input button
-        if st.button("🎤 Voice Input", key="voice_btn"):
-            st.info("Click the microphone button below to speak!")
+        if st.button("🎤 Use Voice", key="voice_btn"):
+            st.info("Use the voice interface below to speak!")
+    
+    # Process text input
+    if user_input and user_input.strip():
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        
+        # Generate response
+        with st.spinner("Thinking..."):
+            response = get_response(user_input)
+        
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})
+        
+        # Increment key to reset input field
+        st.session_state.input_key += 1
+        
+        # Rerun to show new messages and clear input
+        st.rerun()
     
     # Voice interface
     st.markdown("### 🎙️ Voice Interface")
     
     # HTML/JavaScript for voice functionality
-    voice_html = """
+    voice_html = f"""
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin: 10px 0;">
         <div style="text-align: center; color: white;">
             <h3>🎤 Voice Assistant</h3>
@@ -97,36 +119,36 @@ def main():
     let currentResponse = '';
     
     // Personal responses database
-    const responses = {
-        "life story": "I'm an AI assistant created to help people with their questions. I was designed to be helpful, harmless, and honest. My purpose is to assist users by providing accurate information and having meaningful conversations.",
-        "superpower": "My number 1 superpower is my ability to understand context and provide personalized responses quickly. I can process complex information and break it down into simple, actionable insights.",
-        "growth": "The top 3 areas I'd like to grow in are: First, better understanding of cultural nuances and context. Second, improved emotional intelligence in conversations. And third, enhanced ability to provide creative solutions to complex problems.",
-        "misconception": "A common misconception people have about me is that I'm just a simple chatbot. In reality, I'm designed to understand context, remember our conversation, and provide thoughtful, personalized responses based on your specific needs.",
-        "boundaries": "I push my boundaries by constantly learning from each conversation, asking clarifying questions when I'm unsure, and always trying to provide more helpful and accurate responses. I believe in continuous improvement through every interaction."
-    };
+    const responses = {{
+        "life story": `{PERSONAL_RESPONSES["life story"]}`,
+        "superpower": `{PERSONAL_RESPONSES["superpower"]}`,
+        "growth": `{PERSONAL_RESPONSES["growth areas"]}`,
+        "misconception": `{PERSONAL_RESPONSES["misconception"]}`,
+        "boundaries": `{PERSONAL_RESPONSES["boundaries"]}`
+    }};
     
-    function initSpeechRecognition() {
-        if ('webkitSpeechRecognition' in window) {
+    function initSpeechRecognition() {{
+        if ('webkitSpeechRecognition' in window) {{
             recognition = new webkitSpeechRecognition();
-        } else if ('SpeechRecognition' in window) {
+        }} else if ('SpeechRecognition' in window) {{
             recognition = new SpeechRecognition();
-        } else {
-            document.getElementById('status').innerHTML = '❌ Speech recognition not supported in this browser';
+        }} else {{
+            document.getElementById('status').innerHTML = '❌ Speech recognition not supported in this browser. Please use Chrome for best experience.';
             return false;
-        }
+        }}
         
         recognition.continuous = false;
         recognition.interimResults = false;
         recognition.lang = 'en-US';
         
-        recognition.onstart = function() {
+        recognition.onstart = function() {{
             document.getElementById('status').innerHTML = '🎤 Listening... Speak now!';
             document.getElementById('startBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
             isRecording = true;
-        };
+        }};
         
-        recognition.onresult = function(event) {
+        recognition.onresult = function(event) {{
             const transcript = event.results[0][0].transcript;
             document.getElementById('transcript').innerHTML = '<strong>You said:</strong> ' + transcript;
             
@@ -136,122 +158,142 @@ def main():
             document.getElementById('response').innerHTML = '<strong>Assistant:</strong> ' + response;
             
             document.getElementById('status').innerHTML = '✅ Processing complete! Click "Speak Response" to hear the answer.';
-        };
+        }};
         
-        recognition.onerror = function(event) {
-            document.getElementById('status').innerHTML = '❌ Error: ' + event.error;
+        recognition.onerror = function(event) {{
+            let errorMsg = 'Error occurred: ';
+            switch(event.error) {{
+                case 'no-speech':
+                    errorMsg += 'No speech detected. Please try again.';
+                    break;
+                case 'audio-capture':
+                    errorMsg += 'No microphone found. Please check your microphone.';
+                    break;
+                case 'not-allowed':
+                    errorMsg += 'Microphone permission denied. Please allow microphone access.';
+                    break;
+                default:
+                    errorMsg += event.error;
+            }}
+            document.getElementById('status').innerHTML = '❌ ' + errorMsg;
             resetButtons();
-        };
+        }};
         
-        recognition.onend = function() {
+        recognition.onend = function() {{
             resetButtons();
-            if (isRecording) {
-                document.getElementById('status').innerHTML = '🔄 Speech recognition ended. Click "Start Speaking" to try again.';
-            }
-        };
+            if (isRecording && document.getElementById('transcript').innerHTML === '') {{
+                document.getElementById('status').innerHTML = '🔄 No speech detected. Click "Start Speaking" to try again.';
+            }}
+        }};
         
         return true;
-    }
+    }}
     
-    function generateResponse(input) {
+    function generateResponse(input) {{
         const lowerInput = input.toLowerCase();
         
-        if (lowerInput.includes('life story') || lowerInput.includes('tell me about yourself') || lowerInput.includes('who are you')) {
+        if (lowerInput.includes('life story') || lowerInput.includes('tell me about yourself') || lowerInput.includes('who are you') || lowerInput.includes('background') || lowerInput.includes('journey')) {{
             return responses["life story"];
-        } else if (lowerInput.includes('superpower') || lowerInput.includes('strength') || lowerInput.includes('best at')) {
+        }} else if (lowerInput.includes('superpower') || lowerInput.includes('strength') || lowerInput.includes('best at') || lowerInput.includes('good at') || lowerInput.includes('skill')) {{
             return responses["superpower"];
-        } else if (lowerInput.includes('growth') || lowerInput.includes('improve') || lowerInput.includes('develop') || lowerInput.includes('learn')) {
+        }} else if (lowerInput.includes('growth') || lowerInput.includes('improve') || lowerInput.includes('develop') || lowerInput.includes('learn') || lowerInput.includes('areas')) {{
             return responses["growth"];
-        } else if (lowerInput.includes('misconception') || lowerInput.includes('misunderstand') || lowerInput.includes('wrong about')) {
+        }} else if (lowerInput.includes('misconception') || lowerInput.includes('misunderstand') || lowerInput.includes('wrong about') || lowerInput.includes('think about')) {{
             return responses["misconception"];
-        } else if (lowerInput.includes('boundaries') || lowerInput.includes('limits') || lowerInput.includes('challenge') || lowerInput.includes('push')) {
+        }} else if (lowerInput.includes('boundaries') || lowerInput.includes('limits') || lowerInput.includes('challenge') || lowerInput.includes('push')) {{
             return responses["boundaries"];
-        } else {
+        }} else {{
             return "That's an interesting question! I'm designed to answer questions about my life story, superpowers, growth areas, misconceptions, and how I push boundaries. What would you like to know about?";
-        }
-    }
+        }}
+    }}
     
-    function startRecording() {
-        if (!recognition && !initSpeechRecognition()) {
+    function startRecording() {{
+        if (!recognition && !initSpeechRecognition()) {{
             return;
-        }
+        }}
         
         document.getElementById('transcript').innerHTML = '';
         document.getElementById('response').innerHTML = '';
+        currentResponse = '';
         recognition.start();
-    }
+    }}
     
-    function stopRecording() {
-        if (recognition && isRecording) {
+    function stopRecording() {{
+        if (recognition && isRecording) {{
             recognition.stop();
             isRecording = false;
-        }
-    }
+        }}
+    }}
     
-    function speakResponse() {
-        if (!currentResponse) {
+    function speakResponse() {{
+        if (!currentResponse) {{
             document.getElementById('status').innerHTML = '❌ No response to speak. Please ask a question first.';
             return;
-        }
+        }}
         
-        if ('speechSynthesis' in window) {
+        if ('speechSynthesis' in window) {{
             // Stop any ongoing speech
             speechSynthesis.cancel();
             
-            const utterance = new SpeechSynthesisUtterance(currentResponse);
-            utterance.rate = 0.8;
-            utterance.pitch = 1;
-            utterance.volume = 0.8;
+            // Split long responses into chunks to avoid cutoff
+            const maxLength = 200;
+            const chunks = currentResponse.match(new RegExp(`.{{1,${{maxLength}}}}(\\s|$)`, 'g')) || [currentResponse];
             
-            utterance.onstart = function() {
-                document.getElementById('status').innerHTML = '🔊 Speaking response...';
-            };
+            let chunkIndex = 0;
             
-            utterance.onend = function() {
-                document.getElementById('status').innerHTML = '✅ Response completed!';
-            };
+            function speakNextChunk() {{
+                if (chunkIndex < chunks.length) {{
+                    const utterance = new SpeechSynthesisUtterance(chunks[chunkIndex]);
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1;
+                    utterance.volume = 0.8;
+                    
+                    utterance.onstart = function() {{
+                        document.getElementById('status').innerHTML = `🔊 Speaking response... (${{chunkIndex + 1}}/${{chunks.length}})`;
+                    }};
+                    
+                    utterance.onend = function() {{
+                        chunkIndex++;
+                        setTimeout(speakNextChunk, 500); // Small pause between chunks
+                    }};
+                    
+                    utterance.onerror = function() {{
+                        document.getElementById('status').innerHTML = '❌ Error speaking response';
+                    }};
+                    
+                    speechSynthesis.speak(utterance);
+                }} else {{
+                    document.getElementById('status').innerHTML = '✅ Response completed!';
+                }}
+            }}
             
-            speechSynthesis.speak(utterance);
-        } else {
+            speakNextChunk();
+        }} else {{
             document.getElementById('status').innerHTML = '❌ Text-to-speech not supported in this browser';
-        }
-    }
+        }}
+    }}
     
-    function resetButtons() {
+    function resetButtons() {{
         document.getElementById('startBtn').disabled = false;
         document.getElementById('stopBtn').disabled = true;
         isRecording = false;
-    }
+    }}
     
     // Initialize when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        initSpeechRecognition();
-        document.getElementById('status').innerHTML = '🎤 Ready! Click "Start Speaking" to begin.';
-    });
+    document.addEventListener('DOMContentLoaded', function() {{
+        if (initSpeechRecognition()) {{
+            document.getElementById('status').innerHTML = '🎤 Ready! Click "Start Speaking" to begin.';
+        }}
+    }});
     </script>
     """
     
-    st.components.v1.html(voice_html, height=400)
+    st.components.v1.html(voice_html, height=450)
     
-    # Process text input
-    if user_input:
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        
-        # Generate response
-        response = get_response(user_input)
-        
-        # Add assistant response to chat history
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        
-        # Display new messages
-        with st.chat_message("user"):
-            st.markdown(user_input)
-            
-        with st.chat_message("assistant"):
-            st.markdown(response)
-        
-        # Clear input
+    # Clear button
+    if st.button("🗑️ Clear Chat History", key="clear_btn"):
+        st.session_state.messages = []
+        st.session_state.input_key += 1
         st.rerun()
 
 if __name__ == "__main__":

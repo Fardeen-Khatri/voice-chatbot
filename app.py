@@ -56,7 +56,7 @@ def main():
     
     # HTML/JavaScript for voice functionality
     voice_html = f"""
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 20px; margin: 10px 0; max height: 600px; overflow-y: auto">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin: 10px 0; max-height: 700px; overflow-y: auto">
     
         <div style="text-align: center; color: white;">
             <h3>🎤 Voice Assistant</h3>
@@ -70,8 +70,8 @@ def main():
                 🔊 Speak Response
             </button>
             <div id="status" style="margin: 10px; font-weight: bold;"></div>
-            <div id="transcript" style="background: white; color: black; padding: 10px; border-radius: 5px; margin: 10px; min-height: 30px; overflow-y: auto"></div>
-            <div id="response" style="background: #e8f5e8; color: black; padding: 10px; border-radius: 5px; margin: 10px; min-height: 50px; overflow-y: auto"></div>
+            <div id="transcript" style="background: white; color: black; padding: 10px; border-radius: 5px; margin: 10px; min-height: 100px; max-height: 200px; overflow-y: auto"></div>
+            <div id="response" style="background: #e8f5e8; color: black; padding: 10px; border-radius: 5px; margin: 10px; min-height: 150px; max-height: 300px; overflow-y: auto"></div>
         </div>
     </div>
     
